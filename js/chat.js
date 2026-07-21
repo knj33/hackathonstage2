@@ -196,6 +196,40 @@ const Chat = (() => {
 
   // ── network ───────────────────────────────────────────────────────
 
+  // Return the first balanced { … } object in the text, respecting string
+  // literals and escapes so braces inside values don't fool the scan.
+  function extractBalanced(text) {
+    const start = text.indexOf("{");
+    if (start === -1) return null;
+    let depth = 0, inStr = false, esc = false;
+    for (let i = start; i < text.length; i++) {
+      const ch = text[i];
+      if (esc) { esc = false; continue; }
+      if (ch === "\\") { esc = true; continue; }
+      if (ch === '"') { inStr = !inStr; continue; }
+      if (inStr) continue;
+      if (ch === "{") depth++;
+      else if (ch === "}") { if (--depth === 0) return text.slice(start, i + 1); }
+    }
+    return null;
+  }
+
+  // The agent doesn't always return a clean JSON body: it may prepend a
+  // sentence of reasoning ("the material isn't uploaded, generating from
+  // general knowledge…") or wrap the envelope in a ```json fence. Parse
+  // clean JSON first, then recover the embedded envelope; fall back to the
+  // raw string (rendered as text) only if there's no JSON at all.
+  function parseEnvelope(raw) {
+    if (typeof raw !== "string") return raw;
+    const t = raw.trim();
+    try { return JSON.parse(t); } catch (e) { /* not clean JSON */ }
+    const fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fence) { try { return JSON.parse(fence[1].trim()); } catch (e) { /* fenced but invalid */ } }
+    const obj = extractBalanced(t);
+    if (obj) { try { return JSON.parse(obj); } catch (e) { /* looked like JSON but wasn't */ } }
+    return raw;
+  }
+
   async function callWebhook(payload) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -208,7 +242,7 @@ const Chat = (() => {
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
       const raw = await res.text();
-      try { return JSON.parse(raw); } catch (e) { return raw; }
+      return parseEnvelope(raw);
     } finally {
       clearTimeout(timer);
     }
