@@ -1,6 +1,8 @@
 // ── Student profile: form + localStorage ────────────────────────────
-// Profile shape (matches the §5.1 request payload):
+// Profile shape (matches the webhook request payload):
 // { name: string, semester: number, gpa: number|null, grades: { "CSCI-1101": "B+" } }
+// GPA is never entered by hand — it's the credit-weighted average of the
+// grades below, recomputed live and stored read-only.
 
 const Profile = (() => {
 
@@ -19,7 +21,34 @@ const Profile = (() => {
     const p = load();
     if (!p) return null;
     if (!p.name && !Object.keys(p.grades || {}).length) return null;
+    p.gpa = computeGpa(p.grades || {});   // always derived, never stale
     return p;
+  }
+
+  // Credit-weighted GPA over graded courses; null when nothing is graded.
+  function computeGpa(grades) {
+    let points = 0, credits = 0;
+    Object.keys(grades).forEach(code => {
+      const course = CU.courseByCode(code);
+      const pts = CU.gradePoints(grades[code]);
+      if (!course || pts === null) return;
+      points += pts * course.credits;
+      credits += course.credits;
+    });
+    return credits > 0 ? Math.round((points / credits) * 100) / 100 : null;
+  }
+
+  function readGridGrades() {
+    const grades = {};
+    els.gradesGrid.querySelectorAll("select").forEach(sel => {
+      if (sel.value) grades[sel.dataset.code] = sel.value;
+    });
+    return grades;
+  }
+
+  function updateGpaDisplay() {
+    const gpa = computeGpa(readGridGrades());
+    els.gpa.value = gpa === null ? "—" : gpa.toFixed(2);
   }
 
   function save(profile) {
@@ -74,25 +103,19 @@ const Profile = (() => {
   function fillForm(profile) {
     els.name.value = profile && profile.name ? profile.name : "";
     els.semester.value = profile && profile.semester ? String(profile.semester) : "1";
-    els.gpa.value = profile && profile.gpa != null ? profile.gpa : "";
     const grades = (profile && profile.grades) || {};
     els.gradesGrid.querySelectorAll("select").forEach(sel => {
       sel.value = grades[sel.dataset.code] || "";
     });
+    updateGpaDisplay();
   }
 
   function readForm() {
-    const grades = {};
-    els.gradesGrid.querySelectorAll("select").forEach(sel => {
-      if (sel.value) grades[sel.dataset.code] = sel.value;
-    });
-    const gpaRaw = els.gpa.value.trim();
-    let gpa = gpaRaw === "" ? null : Math.min(4, Math.max(0, parseFloat(gpaRaw)));
-    if (gpa !== null && isNaN(gpa)) gpa = null;
+    const grades = readGridGrades();
     return {
       name: els.name.value.trim(),
       semester: parseInt(els.semester.value, 10) || 1,
-      gpa: gpa,
+      gpa: computeGpa(grades),
       grades: grades
     };
   }
@@ -145,6 +168,9 @@ const Profile = (() => {
     buildGradesGrid();
     fillForm(load());
     renderQuizHistory();
+
+    // GPA reacts to every grade change, before saving.
+    els.gradesGrid.addEventListener("change", updateGpaDisplay);
 
     els.form.addEventListener("submit", e => {
       e.preventDefault();

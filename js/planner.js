@@ -45,6 +45,37 @@ const Planner = (() => {
       const legend = document.createElement("legend");
       legend.textContent = "Semester " + sem;
       group.appendChild(legend);
+
+      // Per-semester materials tools: upload syllabi/slides through the
+      // n8n staff portal (opens in a new tab — never embedded), then ask
+      // the advisor for a quiz grounded in what was uploaded.
+      const tools = document.createElement("div");
+      tools.className = "sem-tools";
+      const upload = document.createElement("a");
+      upload.className = "sem-tool";
+      upload.href = STAFF_UPLOAD_URL;
+      upload.target = "_blank";
+      upload.rel = "noopener";
+      upload.textContent = "📄 Upload syllabi";
+      upload.title = "Opens the staff upload portal — the advisor parses the file and can quiz you on the real material";
+      const quizBtn = document.createElement("button");
+      quizBtn.type = "button";
+      quizBtn.className = "sem-tool";
+      quizBtn.textContent = "🎯 Quiz from uploads";
+      quizBtn.title = "Ask the advisor for a quiz grounded in the uploaded materials for these courses";
+      const semCourses = bySem[sem].map(c => c.name + " (" + c.code + ")").join(", ");
+      quizBtn.addEventListener("click", () => {
+        App.showTab("advisor");
+        Chat.send(
+          "Give me a quiz based on the uploaded lecture materials for my semester " + sem +
+          " courses: " + semCourses + ".",
+          { mode: "quiz" }
+        );
+      });
+      tools.appendChild(upload);
+      tools.appendChild(quizBtn);
+      group.appendChild(tools);
+
       bySem[sem].forEach(course => {
         const id = "done-" + course.code;
         const row = document.createElement("div");

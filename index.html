@@ -35,12 +35,13 @@
             <span class="chat-title">CU ECE Advisor</span>
             <span class="chat-status">Advisor online</span>
             <span class="mode-badge" id="chatModeBadge" hidden title="Using canned replies — set WEBHOOK_URL in js/config.js to go live">demo mode</span>
+            <button type="button" class="newchat-btn" id="chatNewBtn" title="Start a fresh conversation">＋ New chat</button>
           </div>
           <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
           <div class="chat-chips" id="chatChips" aria-label="Quick actions"></div>
           <form class="chat-input" id="chatForm">
             <label for="chatInput" class="visually-hidden" hidden>Message the advisor</label>
-            <input type="text" id="chatInput" name="message" placeholder="Ask the advisor anything…" autocomplete="off">
+            <input type="text" id="chatInput" name="message" placeholder="Ask me anything… / მკითხე ნებისმიერი რამ…" autocomplete="off">
             <button type="submit" class="btn primary" id="chatSend">Send</button>
           </form>
         </div>
@@ -69,8 +70,9 @@
             </select>
           </div>
           <div class="field">
-            <label for="pfGpa">GPA (0–4)</label>
-            <input type="number" id="pfGpa" min="0" max="4" step="0.01" placeholder="e.g. 3.2">
+            <label for="pfGpa">GPA — calculated from your grades</label>
+            <input type="text" id="pfGpa" readonly value="—" aria-live="polite"
+                   title="Credit-weighted average of the grades below — updates automatically">
           </div>
         </div>
         <h3>Course grades</h3>

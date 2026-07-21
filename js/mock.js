@@ -232,7 +232,22 @@ const MockAgent = (() => {
   function reply(payload) {
     const msg = (payload.message || "").trim();
     const profile = payload.profile;
-    const isQuizIntent = payload.mode === "quiz" || /\bquiz\b|test me/i.test(msg);
+    // The frontend always sends an explicit mode (it detects "quiz me" in
+    // free text itself), so the mode field alone decides here.
+    const isQuizIntent = payload.mode === "quiz";
+
+    if (/quiz question wrong/i.test(msg)) {
+      return {
+        type: "text",
+        content:
+          "Good instinct to dig into it! The key idea: **groups in a K-map must be power-of-two rectangles**, " +
+          "because each doubling of the group removes exactly one variable from the term.\n\n" +
+          "- A group of 2 cells → 1 variable eliminated\n" +
+          "- 4 cells → 2 eliminated\n" +
+          "- 8 cells → 3 eliminated\n\n" +
+          "Re-read the question with that rule in mind — and try re-taking the quiz to lock it in. 💪"
+      };
+    }
 
     // Continue the failing-course flow (unless the user pivots to a quiz).
     if (!(payload.mode === "quiz") && state.awaiting === "component" && state.course) {

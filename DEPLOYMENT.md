@@ -10,7 +10,8 @@ code. Anything that can serve (or open) HTML can run it.
 ### Option A — just open the file
 
 Double-click `index.html` (or drag it into a browser). Everything works from
-`file://`, chat included, because the app starts in **mock mode** (see §3).
+`file://` — chat talks to the live n8n backend (needs internet); add
+`?mock=1` to the URL for fully offline canned replies.
 
 ### Option B — a local server (closer to how GitHub Pages serves it)
 
@@ -25,10 +26,12 @@ doesn't care which.
 
 ### What to expect
 
-- A **"demo mode"** badge in the chat header means `WEBHOOK_URL` in
-  `js/config.js` still contains `REPLACE_ME`, so chat replies come from the
-  built-in mock (`js/mock.js`) instead of the n8n agent. The full demo works
-  in this state, offline.
+- `js/config.js` already points at the **live n8n endpoints**. Chat replies
+  come from the real agent — typical latency is 5–15 s (it may call tools
+  and web search); the frontend waits up to 60 s with a typing indicator.
+- Append **`?mock=1`** to the URL to force **mock mode** (canned replies
+  from `js/mock.js`, zero network) — useful for offline demos. A
+  **"demo mode"** badge in the chat header confirms the mock is active.
 - Try the signature flow: *"I'm failing CompSci Basics 1"* → *"the labs"*,
   then *"Quiz me on this week's lecture"*.
 - The **Profile**, **Analyzer** and **Planner** tabs are always fully
@@ -75,18 +78,22 @@ Every future push to `main` redeploys automatically in ~1 minute.
 
 ---
 
-## 3. Connecting the real n8n agent
+## 3. The n8n backend
 
-When the webhook workflow is live in n8n Cloud, edit `js/config.js`:
+`js/config.js` is already wired to the live endpoints:
 
 ```js
-const WEBHOOK_URL = "https://svanetisubanirobotics.app.n8n.cloud/webhook/<your-webhook-path>";
-const STAFF_UPLOAD_URL = "https://svanetisubanirobotics.app.n8n.cloud/form/<your-form-path>";
+const WEBHOOK_URL = "https://svanetisubanirobotics.app.n8n.cloud/webhook/cu-advisor-chat";
+const STAFF_UPLOAD_URL = "https://svanetisubanirobotics.app.n8n.cloud/form/cu-upload-materials";
 ```
 
-Commit and push to `main`. As soon as `REPLACE_ME` is gone from
-`WEBHOOK_URL`, the app switches from mock to the live webhook automatically
-(the "demo mode" badge disappears).
+Both workflows must be **published (active) in n8n**. A 404 body saying
+*"webhook not registered"* means the workflow isn't published — flip the
+Active toggle in the n8n editor; nothing needs to change on the frontend.
+
+The staff upload URL is a plain link opened in a new tab from the footer and
+the Planner's per-semester "Upload syllabi" buttons — it is never embedded
+in the page or POSTed to.
 
 Two things must be true on the n8n side, or the browser will block the calls:
 
@@ -108,13 +115,16 @@ The request the frontend sends (for reference when testing the workflow):
 
 ```json
 {
-  "sessionId": "uuid-v4, generated once per browser",
-  "message": "the user's message",
+  "sessionId": "uuid-v4, generated once per browser; rotated by the New chat button",
+  "message": "the user's message (always non-empty — empty sends are blocked client-side)",
   "mode": "chat | quiz",
-  "profile": { "name": "…", "semester": 3, "gpa": 3.1, "grades": { "CSCI-1101": "C" } },
-  "history": [ { "role": "user", "content": "…" }, { "role": "assistant", "content": "…" } ]
+  "profile": { "name": "…", "semester": 3, "gpa": 3.1, "grades": { "CSCI-1101": "C" } }
 }
 ```
+
+`profile` is omitted entirely when the user hasn't filled anything in, and
+`gpa` is auto-calculated from the grades (credit-weighted). No `history`
+array is sent — conversation memory lives server-side, keyed on `sessionId`.
 
 ---
 
@@ -145,7 +155,8 @@ The request the frontend sends (for reference when testing the workflow):
 |---|---|
 | 404 at the Pages URL | Pages not enabled yet, or wrong branch/folder selected — recheck Step 2; wait a minute after saving. |
 | Site loads but looks unstyled | Asset paths were changed to absolute (`/css/…`). Keep them relative (`css/…`). |
-| Chat shows "demo mode" in production | `WEBHOOK_URL` still contains `REPLACE_ME` — set it in `js/config.js` and push. |
+| Chat shows "demo mode" in production | `?mock=1` left in the URL, or `WEBHOOK_URL` reverted to a placeholder. |
+| 404 "webhook not registered" | Workflow not published in n8n — activate it; use the `/webhook/` production path, not `/webhook-test/`. |
 | Chat error bubble on every message | Webhook URL wrong, workflow not active, or missing CORS headers on the n8n response. Test the webhook with `curl` first. |
 | Quiz arrives as plain text | The agent returned the quiz as a string instead of the `type:"quiz"` envelope with valid quiz JSON — fix the agent's system prompt / Respond node. |
 | Old version still showing after a push | GitHub Pages cache — hard-refresh (Ctrl/Cmd+Shift+R); deploys take ~1 minute. |

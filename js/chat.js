@@ -1,28 +1,37 @@
 // ── Chat: UI + webhook client + session memory ──────────────────────
-// Implements the §5 n8n contract exactly:
-//   POST { sessionId, message, mode, profile, history } → envelope
+// Implements the live n8n contract:
+//   POST { sessionId, message, mode, profile? } → envelope
 //   { type: "text" | "quiz" | "resources", ... }
-// Falls back to MockAgent while WEBHOOK_URL contains "REPLACE_ME".
+// Conversation memory lives server-side, keyed on sessionId — no history
+// array is sent. Falls back to MockAgent in mock mode (see config.js).
 
 const Chat = (() => {
 
   let els = {};
-  let history = [];        // [{ role, content }] — capped at 10 for the payload
   let busy = false;
   let lastPayload = null;  // kept for the retry button
   let chipsUsed = false;
 
   // ── session id ────────────────────────────────────────────────────
 
+  function newUuid() {
+    return (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : "s-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+  }
+
   function sessionId() {
     let id = localStorage.getItem("cu_session_id");
     if (!id) {
-      id = (window.crypto && crypto.randomUUID)
-        ? crypto.randomUUID()
-        : "s-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+      id = newUuid();
       localStorage.setItem("cu_session_id", id);
     }
     return id;
+  }
+
+  // Fresh server-side conversation: new UUID, same browser.
+  function rotateSession() {
+    localStorage.setItem("cu_session_id", newUuid());
   }
 
   // ── tiny markdown renderer (escape first, then format) ────────────
@@ -150,27 +159,21 @@ const Chat = (() => {
 
   // Envelope dispatch (§5.2) with graceful fallback to raw text.
   function handleResponse(data) {
-    let text = "";
     if (data && data.type === "text" && typeof data.content === "string") {
-      text = data.content;
-      addAssistantMarkdown(text);
+      addAssistantMarkdown(data.content);
     } else if (data && data.type === "quiz" && Quiz.isValid(data.quiz)) {
-      text = (data.content || "Here's your quiz:") + " [quiz: " + (data.quiz.topic || "") + "]";
       const container = document.createElement("div");
       if (data.content) container.innerHTML = renderMarkdown(data.content);
       container.appendChild(Quiz.render(data.quiz));
       addBubble("assistant", container);
     } else if (data && data.type === "resources" && Array.isArray(data.resources)) {
-      text = (data.content || "") + " " +
-        data.resources.map(r => (r && r.title) || "").join(", ");
       renderResources(data);
     } else {
       // Unknown/missing fields → show whatever we can as raw text.
-      text = typeof data === "string" ? data
+      const text = typeof data === "string" ? data
         : (data && (data.content || data.output || data.text)) || JSON.stringify(data);
       addAssistantMarkdown(String(text));
     }
-    history.push({ role: "assistant", content: String(text).slice(0, 2000) });
   }
 
   function showError(message) {
@@ -224,8 +227,8 @@ const Chat = (() => {
     } catch (err) {
       typing.remove();
       showError(err.name === "AbortError"
-        ? "The advisor took too long to respond (30s timeout)."
-        : "I can't reach the advisor brain right now.");
+        ? "The advisor took too long to respond (60s timeout)."
+        : "I can't reach the advisor right now.");
     } finally {
       busy = false;
       els.sendBtn.disabled = false;
@@ -233,13 +236,10 @@ const Chat = (() => {
   }
 
   function buildPayload(message, mode) {
-    return {
-      sessionId: sessionId(),
-      message: message,
-      mode: mode,
-      profile: Profile.get(),
-      history: history.slice(-10)
-    };
+    const payload = { sessionId: sessionId(), message: message, mode: mode };
+    const profile = Profile.get();
+    if (profile) payload.profile = profile;   // omit entirely when empty
+    return payload;
   }
 
   // Public entry point — used by the form, chips, analyzer and quiz.
@@ -254,7 +254,6 @@ const Chat = (() => {
 
     const payload = buildPayload(text, mode);
     lastPayload = payload;
-    history.push({ role: "user", content: text });
     dispatch(payload);
   }
 
@@ -266,7 +265,7 @@ const Chat = (() => {
   // ── chips & form ──────────────────────────────────────────────────
 
   const CHIPS = [
-    { icon: "📚", label: "Quiz me on this week's lecture", message: "Quiz me on this week's lecture", mode: "quiz" },
+    { icon: "📚", label: "Quiz me on this week's lecture", message: "Give me a quiz on this week's lecture material", mode: "quiz" },
     { icon: "📉", label: "I'm struggling in a course", message: "I'm struggling in one of my courses" },
     { icon: "🌍", label: "Foreign admissions info", message: "I'd like info about foreign university admissions and exchange programs" },
     { icon: "🗓", label: "Plan my semester", message: "Help me plan my next semester" }
@@ -290,14 +289,30 @@ const Chat = (() => {
     setTimeout(() => { els.chips.hidden = true; }, 250);
   }
 
+  function showChips() {
+    chipsUsed = false;
+    els.chips.hidden = false;
+    els.chips.classList.remove("hidden");
+  }
+
+  // "New chat": fresh sessionId (fresh server-side memory), clean thread.
+  function newChat() {
+    if (busy) return;
+    rotateSession();
+    lastPayload = null;
+    els.messages.innerHTML = "";
+    showChips();
+    welcome();
+    els.input.focus();
+  }
+
   function welcome() {
     const name = (Profile.get() || {}).name;
     const md =
       "Hi" + (name ? " **" + name.split(/\s+/)[0] + "**" : "") + "! 👋 I'm your **CU ECE advisor**. " +
       "Ask me about courses, prerequisites, professors, study resources or foreign admissions — " +
-      "or pick a quick action below.";
+      "in English or Georgian — or pick a quick action below.";
     addAssistantMarkdown(md);
-    history.push({ role: "assistant", content: md });
   }
 
   function init() {
@@ -307,13 +322,16 @@ const Chat = (() => {
       input: document.getElementById("chatInput"),
       sendBtn: document.getElementById("chatSend"),
       chips: document.getElementById("chatChips"),
-      modeBadge: document.getElementById("chatModeBadge")
+      modeBadge: document.getElementById("chatModeBadge"),
+      newBtn: document.getElementById("chatNewBtn")
     };
 
     if (MOCK_MODE) els.modeBadge.hidden = false;
 
     buildChips();
     welcome();
+
+    els.newBtn.addEventListener("click", newChat);
 
     els.form.addEventListener("submit", e => {
       e.preventDefault();

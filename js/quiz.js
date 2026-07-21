@@ -142,9 +142,12 @@ const Quiz = (() => {
         help.className = "btn secondary quiz-help";
         help.textContent = "Help me understand this";
         help.addEventListener("click", () => {
+          // Explicit chat mode: the word "quiz" in this message must not
+          // trigger quiz-mode detection and spawn another quiz.
           Chat.send(
-            'I got this quiz question wrong: "' + q.question +
-            '". I answered "' + q.options[chosen] + '". Explain it to me.'
+            "I got this quiz question wrong: " + q.question +
+            " I answered '" + q.options[chosen] + "'. Explain it to me.",
+            { mode: "chat" }
           );
         });
         fs.appendChild(help);

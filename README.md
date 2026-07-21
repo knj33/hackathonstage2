@@ -18,23 +18,27 @@ AI agent through a webhook.
   structured quiz JSON rendered as an interactive card with scoring, explanations
   and per-question "Help me understand this" tutoring
 
-## Connecting the n8n agent
+## The n8n backend
 
-Edit `js/config.js`:
+`js/config.js` points at the live n8n Cloud endpoints:
 
 ```js
-const WEBHOOK_URL = "https://svanetisubanirobotics.app.n8n.cloud/webhook/<your-webhook-path>";
-const STAFF_UPLOAD_URL = "https://svanetisubanirobotics.app.n8n.cloud/form/<your-form-path>";
+const WEBHOOK_URL = "https://svanetisubanirobotics.app.n8n.cloud/webhook/cu-advisor-chat";
+const STAFF_UPLOAD_URL = "https://svanetisubanirobotics.app.n8n.cloud/form/cu-upload-materials";
 ```
 
-While `WEBHOOK_URL` still contains `REPLACE_ME`, the app runs in **mock mode**
-(a "demo mode" badge appears in the chat header): canned replies from
-`js/mock.js` cover the whole demo — text, quiz, resources, and the multi-turn
-failing-course flow — with no network needed.
+Both workflows must be **published** in n8n; until then the chat shows a
+friendly offline error (the rest of the app works without network).
 
-The webhook contract (request/response JSON) is documented in `js/chat.js` and
-must match the n8n "Respond to Webhook" node. The n8n side must send
-`Access-Control-Allow-Origin: *` and answer `OPTIONS` preflight.
+**Mock mode** (canned replies from `js/mock.js`, zero network — covers text,
+quiz, resources and the multi-turn failing-course flow) activates when
+`WEBHOOK_URL` contains `REPLACE_ME`, or on demand with **`?mock=1`** in the
+URL — handy insurance for offline demos. A "demo mode" badge shows in the
+chat header when it's active.
+
+The webhook contract (request/response JSON) is documented in `js/chat.js`
+and `DEPLOYMENT.md`. Conversation memory is server-side, keyed on
+`sessionId` — the "＋ New chat" button rotates the ID for a fresh thread.
 
 ## Deploying to GitHub Pages
 
