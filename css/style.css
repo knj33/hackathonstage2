@@ -832,6 +832,19 @@ main {
 }
 .footer-inner a { color: var(--navy-mid); }
 
+.about-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px 18px;
+}
+.about-section p {
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--line);
+  text-align: justify;
+  max-width: 900px;
+}
+
 /* ── responsive ───────────────────────────────────────────────────── */
 
 @media (max-width: 900px) {
