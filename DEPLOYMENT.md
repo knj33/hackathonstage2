@@ -34,8 +34,8 @@ doesn't care which.
   **"demo mode"** badge in the chat header confirms the mock is active.
 - Try the signature flow: *"I'm failing CompSci Basics 1"* → *"the labs"*,
   then *"Quiz me on this week's lecture"*.
-- The **Profile**, **Analyzer** and **Planner** tabs are always fully
-  client-side, in every mode.
+- The **Profile** and **Analyzer** tabs are always fully client-side;
+  the **Quizzes** tab needs the backend (or mock mode) to generate quizzes.
 
 ---
 
@@ -92,8 +92,7 @@ Both workflows must be **published (active) in n8n**. A 404 body saying
 Active toggle in the n8n editor; nothing needs to change on the frontend.
 
 The staff upload URL is a plain link opened in a new tab from the footer and
-the Planner's per-semester "Upload syllabi" buttons — it is never embedded
-in the page or POSTed to.
+the Quizzes tab — it is never embedded in the page or POSTed to.
 
 Two things must be true on the n8n side, or the browser will block the calls:
 
@@ -139,9 +138,9 @@ array is sent — conversation memory lives server-side, keyed on `sessionId`.
 3. Quick end-to-end pass:
    - save a profile → refresh → it's still there
    - Analyzer ranks three fields with match bars
-   - Planner: tick *Calculus 1* + *CompSci Basics 1* → Calculus 2, CompSci
-     Basics 2, Digital Logic, Linear Algebra, Physics 1 and Academic English
-     unlock; blocked courses name their missing prerequisites
+   - Quizzes: pick an uploaded subject → a 4-option quiz renders in-page;
+     miss a question → the "resources & recommendations" button sends the
+     mistakes to the advisor
    - chat: the failing-course flow, a quiz (submit → score → explanations →
      "Help me understand this"), and a resources reply
 4. Check once at phone width (DevTools device mode, 360px) — the demo may be

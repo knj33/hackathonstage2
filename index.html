@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CU აკადემიური მრჩეველი — ECE</title>
-  <meta name="description" content="AI აკადემიური მრჩეველი კავკასიის უნივერსიტეტის ECE სტუდენტებისთვის: ჩატი, ძლიერი მხარეების ანალიზი, სემესტრის დაგეგმვა და ქვიზები.">
+  <meta name="description" content="AI აკადემიური მრჩეველი კავკასიის უნივერსიტეტის ECE სტუდენტებისთვის: ჩატი, ძლიერი მხარეების ანალიზი და ქვიზები ატვირთულ მასალაზე.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+Georgian:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
         <button class="tab" id="tab-advisor" role="tab" aria-selected="true" aria-controls="panel-advisor">მრჩეველი</button>
         <button class="tab" id="tab-profile" role="tab" aria-selected="false" aria-controls="panel-profile">პროფილი</button>
         <button class="tab" id="tab-analyzer" role="tab" aria-selected="false" aria-controls="panel-analyzer">ანალიზატორი</button>
-        <button class="tab" id="tab-planner" role="tab" aria-selected="false" aria-controls="panel-planner">დამგეგმავი</button>
+        <button class="tab" id="tab-quizzes" role="tab" aria-selected="false" aria-controls="panel-quizzes">ქვიზები</button>
       </nav>
     </div>
   </header>
@@ -52,7 +52,7 @@
     <section class="tab-panel" id="panel-profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
       <div class="panel-head">
         <h2>შენი პროფილი</h2>
-        <p class="lead">შეიყვანე შეფასებები ერთხელ — მრჩეველი ყველა პასუხს შენზე მოარგებს; ანალიზატორი და დამგეგმავიც ამ მონაცემებს იყენებს. ყველაფერი შენს ბრაუზერში რჩება.</p>
+        <p class="lead">შეიყვანე შეფასებები ერთხელ — მრჩეველი ყველა პასუხს შენზე მოარგებს; ანალიზატორიც ამ მონაცემებს იყენებს. ყველაფერი შენს ბრაუზერში რჩება.</p>
       </div>
       <form class="card form-card" id="profileForm">
         <div class="form-grid">
@@ -100,24 +100,19 @@
       <div id="analyzerContent"></div>
     </section>
 
-    <!-- ── Planner ────────────────────────────────────────────────── -->
-    <section class="tab-panel" id="panel-planner" role="tabpanel" aria-labelledby="tab-planner" hidden>
+    <!-- ── Quizzes ────────────────────────────────────────────────── -->
+    <section class="tab-panel" id="panel-quizzes" role="tabpanel" aria-labelledby="tab-quizzes" hidden>
       <div class="panel-head">
-        <h2>სემესტრის დამგეგმავი</h2>
-        <p class="lead">ნახე, რისი აღება შეგიძლია. მონიშნე ჩაბარებული კურსები — შედეგები და შემოთავაზებული განრიგი მყისიერად განახლდება.</p>
+        <h2>ქვიზები</h2>
+        <p class="lead">აირჩიე საგანი, რომელზეც ლექციის მასალაა ატვირთული — მრჩეველი რეალურ მასალაზე დაყრდნობით შეგიდგენს 4-ვარიანტიან ქვიზს.</p>
       </div>
-      <div class="planner-layout">
-        <div class="card planner-side">
-          <h3>ჩაბარებული კურსები</h3>
-          <p class="hint">მონიშნე ყველაფერი, რაც ჩაბარებული გაქვს.</p>
-          <div id="plannerCourses"></div>
-          <div class="planner-side-actions">
-            <button type="button" class="btn secondary" id="plannerImport">ჩატვირთე პროფილიდან</button>
-            <button type="button" class="btn ghost" id="plannerReset">გასუფთავება</button>
-            <span id="plannerImportStatus" role="status"></span>
-          </div>
+      <div class="quizzes-layout">
+        <div class="card quiz-subjects-card">
+          <h3>ატვირთული საგნები</h3>
+          <p class="hint">ჩანს მხოლოდ ის საგნები, რომლებზეც მასალა ატვირთულია.</p>
+          <div id="quizSubjects" class="subject-list"></div>
         </div>
-        <div class="planner-results" id="plannerResults"></div>
+        <div id="quizStage" class="quiz-stage"></div>
       </div>
     </section>
 
@@ -136,7 +131,7 @@
   <script src="js/quiz.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/analyzer.js"></script>
-  <script src="js/planner.js"></script>
+  <script src="js/quizzes.js"></script>
   <script src="js/chat.js"></script>
   <script src="js/app.js"></script>
 </body>

@@ -2,7 +2,7 @@
 
 const App = (() => {
 
-  const TABS = ["advisor", "profile", "analyzer", "planner"];
+  const TABS = ["advisor", "profile", "analyzer", "quizzes"];
 
   function showTab(name) {
     if (TABS.indexOf(name) === -1) name = "advisor";
@@ -17,7 +17,6 @@ const App = (() => {
     });
     // Re-render data-driven tabs so they always reflect the latest profile.
     if (name === "analyzer") Analyzer.render();
-    if (name === "planner") Planner.render();
   }
 
   function initTabs() {
@@ -43,7 +42,7 @@ const App = (() => {
     Quiz.getHistory();
     Chat.init();
     Analyzer.init();
-    Planner.init();
+    Quizzes.init();
     document.getElementById("staffPortalLink").href = STAFF_UPLOAD_URL;
     showTab("advisor");
   }

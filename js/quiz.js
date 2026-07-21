@@ -39,8 +39,10 @@ const Quiz = (() => {
       );
   }
 
-  // Builds and returns the quiz card element (chat.js appends it).
-  function render(quiz) {
+  // Builds and returns the quiz card element. opts.onGraded (optional)
+  // fires after submission with { score, total, wrong: [{question,
+  // chosen, correct}] } — the Quizzes section uses it for follow-ups.
+  function render(quiz, opts) {
     const uid = "quiz-" + (++counter);
     const card = document.createElement("div");
     card.className = "quiz-card";
@@ -100,13 +102,13 @@ const Quiz = (() => {
 
     form.addEventListener("submit", e => {
       e.preventDefault();
-      grade(card, form, quiz, uid, note);
+      grade(card, form, quiz, uid, note, opts);
     });
 
     return card;
   }
 
-  function grade(card, form, quiz, uid, note) {
+  function grade(card, form, quiz, uid, note, opts) {
     // Require every question answered (keeps scoring honest).
     const answers = quiz.questions.map((q, qi) => {
       const checked = form.querySelector('input[name="' + uid + "-q" + qi + '"]:checked');
@@ -121,6 +123,7 @@ const Quiz = (() => {
     }
 
     let score = 0;
+    const wrong = [];
     form.querySelectorAll(".quiz-question").forEach((fs, qi) => {
       const q = quiz.questions[qi];
       const chosen = answers[qi];
@@ -137,6 +140,11 @@ const Quiz = (() => {
       expl.hidden = false;
 
       if (!correct) {
+        wrong.push({
+          question: q.question,
+          chosen: q.options[chosen],
+          correct: q.options[q.correctIndex]
+        });
         const help = document.createElement("button");
         help.type = "button";
         help.className = "btn secondary quiz-help";
@@ -165,6 +173,9 @@ const Quiz = (() => {
 
     form.querySelector('button[type="submit"]').hidden = true;
     saveResult(quiz.topic || "Quiz", score, quiz.questions.length);
+    if (opts && typeof opts.onGraded === "function") {
+      opts.onGraded({ score, total: quiz.questions.length, wrong });
+    }
   }
 
   return { render, isValid, getHistory };

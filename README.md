@@ -12,11 +12,13 @@ AI agent through a webhook.
   `localStorage` and sent as context with every chat message
 - 📊 **Strength Analyzer** — rule-based, offline: maps your grades to ECE
   specialization fields (Embedded, DSP, Software, ML, Power, Telecom, Robotics)
-- 🗓 **Semester Planner** — offline prerequisite engine: what you're eligible
-  for, what's blocked (and by which prerequisite), plus a suggested ~30-credit schedule
-- 📝 **Quiz Mode** — ask for a quiz on this week's lecture; the agent returns
-  structured quiz JSON rendered as an interactive card with scoring, explanations
-  and per-question "Help me understand this" tutoring
+- 📝 **Quizzes tab** — lists only the subjects with uploaded lecture material /
+  syllabi; picking one renders a grounded 4-option quiz in-page, and after
+  grading a button sends the missed questions to the advisor for resources
+  and focus recommendations
+- 💬 **Quiz Mode in chat** — asking for a quiz in the conversation returns
+  structured quiz JSON rendered as an interactive card with scoring,
+  explanations and per-question tutoring
 
 ## The n8n backend
 
@@ -53,7 +55,7 @@ disables Jekyll processing.
 ## Project structure
 
 ```
-index.html          single page, 4 tabs (Advisor / Profile / Analyzer / Planner)
+index.html          single page, 4 tabs (Advisor / Profile / Analyzer / Quizzes)
 css/style.css       design system (white + navy, Sora/Inter)
 js/config.js        WEBHOOK_URL + STAFF_UPLOAD_URL
 js/data.js          embedded ECE dataset (courses, professors, syllabi,
@@ -62,7 +64,7 @@ js/mock.js          offline mock of the n8n agent (active until config is set)
 js/chat.js          chat UI, webhook client, session memory, markdown renderer
 js/profile.js       profile form + localStorage
 js/analyzer.js      strength analyzer (rule-based, client-side)
-js/planner.js       prerequisite engine + schedule suggestion
+js/quizzes.js       quizzes tab: uploaded-subject list + grounded quiz flow
 js/quiz.js          interactive quiz renderer + grading + history
 js/app.js           tab navigation + init
 ```

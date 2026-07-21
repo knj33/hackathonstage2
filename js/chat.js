@@ -180,7 +180,7 @@ const Chat = (() => {
     const container = document.createElement("div");
     container.innerHTML =
       "<p><strong>" + escapeHtml(message) + "</strong></p>" +
-      "<p>ამასობაში <em>დამგეგმავი</em> და <em>ანალიზატორი</em> ინტერნეტის გარეშეც მუშაობს.</p>";
+      "<p>ამასობაში <em>პროფილი</em> და <em>ანალიზატორი</em> ინტერნეტის გარეშეც მუშაობს.</p>";
     const retry = document.createElement("button");
     retry.type = "button";
     retry.className = "btn secondary";
@@ -260,6 +260,14 @@ const Chat = (() => {
   function resend() {
     if (busy || !lastPayload) return;
     dispatch(lastPayload);
+  }
+
+  // Backend round-trip that bypasses the chat thread — same payload,
+  // same mock/live switch. The Quizzes section uses this to fetch a
+  // grounded quiz and render it in its own panel.
+  function request(message, opts) {
+    const payload = buildPayload(message.trim(), (opts && opts.mode) || "chat");
+    return MOCK_MODE ? MockAgent.respond(payload) : callWebhook(payload);
   }
 
   // ── chips & form ──────────────────────────────────────────────────
@@ -343,5 +351,5 @@ const Chat = (() => {
     });
   }
 
-  return { init, send };
+  return { init, send, request };
 })();
