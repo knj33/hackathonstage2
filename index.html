@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CU Academic Advisor — ECE</title>
+  <meta name="description" content="AI academic advisor for Caucasus University ECE students: chat advising, strength analysis, semester planning and quizzes.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="#"><span class="wm-badge">CU</span>Academic Advisor</a>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button class="tab" id="tab-advisor" role="tab" aria-selected="true" aria-controls="panel-advisor">Advisor</button>
+        <button class="tab" id="tab-profile" role="tab" aria-selected="false" aria-controls="panel-profile">Profile</button>
+        <button class="tab" id="tab-analyzer" role="tab" aria-selected="false" aria-controls="panel-analyzer">Analyzer</button>
+        <button class="tab" id="tab-planner" role="tab" aria-selected="false" aria-controls="panel-planner">Planner</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Advisor (chat) ─────────────────────────────────────────── -->
+    <section class="tab-panel" id="panel-advisor" role="tabpanel" aria-labelledby="tab-advisor">
+      <div class="chat-field">
+        <div class="chat-card">
+          <div class="chat-header">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span class="chat-title">CU ECE Advisor</span>
+            <span class="chat-status">Advisor online</span>
+            <span class="mode-badge" id="chatModeBadge" hidden title="Using canned replies — set WEBHOOK_URL in js/config.js to go live">demo mode</span>
+          </div>
+          <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+          <div class="chat-chips" id="chatChips" aria-label="Quick actions"></div>
+          <form class="chat-input" id="chatForm">
+            <label for="chatInput" class="visually-hidden" hidden>Message the advisor</label>
+            <input type="text" id="chatInput" name="message" placeholder="Ask the advisor anything…" autocomplete="off">
+            <button type="submit" class="btn primary" id="chatSend">Send</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Profile ────────────────────────────────────────────────── -->
+    <section class="tab-panel" id="panel-profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
+      <div class="panel-head">
+        <h2>Your profile</h2>
+        <p class="lead">Add your grades once — the advisor personalizes every answer, and the analyzer and planner use them too. Everything stays in your browser.</p>
+      </div>
+      <form class="card form-card" id="profileForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="pfName">Name</label>
+            <input type="text" id="pfName" autocomplete="name" placeholder="e.g. Giorgi Beridze">
+          </div>
+          <div class="field">
+            <label for="pfSemester">Current semester</label>
+            <select id="pfSemester">
+              <option value="1">1</option><option value="2">2</option>
+              <option value="3">3</option><option value="4">4</option>
+              <option value="5">5</option><option value="6">6</option>
+              <option value="7">7</option><option value="8">8</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pfGpa">GPA (0–4)</label>
+            <input type="number" id="pfGpa" min="0" max="4" step="0.01" placeholder="e.g. 3.2">
+          </div>
+        </div>
+        <h3>Course grades</h3>
+        <p class="hint">Set a grade for each course you've taken; leave the rest empty.</p>
+        <div class="grades-grid" id="gradesGrid"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Save profile</button>
+          <button type="button" class="btn ghost" id="pfClear">Clear</button>
+          <span class="save-status" id="pfStatus" role="status"></span>
+        </div>
+      </form>
+      <div class="card">
+        <h3>Quiz history</h3>
+        <ul id="quizHistoryList"></ul>
+        <p class="empty" id="quizHistoryEmpty">No quizzes yet — open the Advisor tab and say "quiz me on this week's lecture".</p>
+      </div>
+    </section>
+
+    <!-- ── Analyzer ───────────────────────────────────────────────── -->
+    <section class="tab-panel" id="panel-analyzer" role="tabpanel" aria-labelledby="tab-analyzer" hidden>
+      <div class="panel-head">
+        <h2>Strength analyzer</h2>
+        <p class="lead">Your grades, mapped to ECE specialization fields — see where you're strongest and what to take next.</p>
+      </div>
+      <div id="analyzerContent"></div>
+    </section>
+
+    <!-- ── Planner ────────────────────────────────────────────────── -->
+    <section class="tab-panel" id="panel-planner" role="tabpanel" aria-labelledby="tab-planner" hidden>
+      <div class="panel-head">
+        <h2>Semester planner</h2>
+        <p class="lead">Check what you can take next. Tick your completed courses — eligibility and a suggested schedule update instantly.</p>
+      </div>
+      <div class="planner-layout">
+        <div class="card planner-side">
+          <h3>Completed courses</h3>
+          <p class="hint">Tick everything you've passed.</p>
+          <div id="plannerCourses"></div>
+          <div class="planner-side-actions">
+            <button type="button" class="btn secondary" id="plannerImport">Import from profile</button>
+            <button type="button" class="btn ghost" id="plannerReset">Reset</button>
+            <span id="plannerImportStatus" role="status"></span>
+          </div>
+        </div>
+        <div class="planner-results" id="plannerResults"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>Caucasus University · Electrical &amp; Computer Engineering — student prototype</span>
+      <a id="staffPortalLink" href="#" target="_blank" rel="noopener">Staff portal — upload materials</a>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/mock.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/analyzer.js"></script>
+  <script src="js/planner.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
