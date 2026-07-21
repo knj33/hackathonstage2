@@ -56,9 +56,9 @@ const Analyzer = (() => {
     if (!Object.keys(grades).length) {
       mount.innerHTML =
         '<div class="card empty-card">' +
-        "<h3>No grades yet</h3>" +
-        "<p>Add a few course grades in your <strong>Profile</strong> and I'll find your strengths.</p>" +
-        '<button class="btn primary" type="button" data-goto="profile">Add your grades</button>' +
+        "<h3>ჯერ შეფასებები არ არის</h3>" +
+        "<p>დაამატე რამდენიმე შეფასება <strong>პროფილში</strong> და ძლიერ მხარეებს გიპოვი.</p>" +
+        '<button class="btn primary" type="button" data-goto="profile">დაამატე შეფასებები</button>' +
         "</div>";
       mount.querySelector("[data-goto]").addEventListener("click", () => App.showTab("profile"));
       return;
@@ -71,15 +71,15 @@ const Analyzer = (() => {
 
     if (!scoredCats.length) {
       mount.innerHTML =
-        '<div class="card empty-card"><h3>Not enough data</h3>' +
-        "<p>Your graded courses are all general-education — add grades in a technical course (math, programming, circuits…) to get a match.</p></div>";
+        '<div class="card empty-card"><h3>საკმარისი მონაცემები არ არის</h3>' +
+        "<p>შენი შეფასებული კურსები მხოლოდ ზოგადი მიმართულებისაა — დაამატე ტექნიკური კურსის შეფასება (მათემატიკა, პროგრამირება, წრედები…), რომ თანხვედრა დაითვალოს.</p></div>";
       return;
     }
 
     const ranked = scoreFields(avgs);
     const top3 = ranked.slice(0, 3);
 
-    let html = '<div class="card analyzer-summary"><h3>Your category profile</h3><div class="cat-bars">';
+    let html = '<div class="card analyzer-summary"><h3>შენი კატეგორიების პროფილი</h3><div class="cat-bars">';
     allCats.forEach(cat => {
       const has = avgs[cat] !== undefined;
       const pct = has ? Math.round((avgs[cat] / 4) * 100) : 0;
@@ -87,18 +87,18 @@ const Analyzer = (() => {
         '<div class="cat-bar' + (has ? "" : " nodata") + '">' +
         '<span class="cat-name">' + CU_DATA.categoryLabels[cat] + "</span>" +
         '<span class="bar-track"><span class="bar-fill" style="width:0%" data-width="' + pct + '"></span></span>' +
-        '<span class="cat-val">' + (has ? avgs[cat].toFixed(1) + " / 4" : "no data") + "</span>" +
+        '<span class="cat-val">' + (has ? avgs[cat].toFixed(1) + " / 4" : "არ არის") + "</span>" +
         "</div>";
     });
     html += "</div>";
     if (missing.length) {
-      html += '<p class="hint">Missing data for <strong>' +
+      html += '<p class="hint">აკლია მონაცემები კატეგორიებში: <strong>' +
         missing.map(c => CU_DATA.categoryLabels[c]).join(", ") +
-        "</strong> — matches below only use the categories you have grades in. Add those grades to sharpen the result.</p>";
+        "</strong> — თანხვედრა მხოლოდ არსებულ შეფასებებზეა დათვლილი. დაამატე ეს შეფასებები უფრო ზუსტი შედეგისთვის.</p>";
     }
     html += "</div>";
 
-    html += '<h3 class="analyzer-heading">Your top field matches</h3><div class="field-cards">';
+    html += '<h3 class="analyzer-heading">შენი ტოპ მიმართულებები</h3><div class="field-cards">';
     top3.forEach((r, i) => {
       const taken = Object.keys(grades);
       const nextCourses = r.field.recommendedCourses
@@ -110,13 +110,13 @@ const Analyzer = (() => {
         '<div class="field-rank">#' + (i + 1) + "</div>" +
         "<h4>" + esc(r.field.name) + "</h4>" +
         '<div class="match-line"><span class="bar-track"><span class="bar-fill" style="width:0%" data-width="' +
-          r.match + '"></span></span><span class="match-pct">' + r.match + "% match</span></div>" +
+          r.match + '"></span></span><span class="match-pct">' + r.match + "% თანხვედრა</span></div>" +
         '<p class="field-desc">' + esc(r.field.description) + "</p>" +
-        '<div class="field-meta"><span class="meta-label">Careers</span><div class="chip-row">' +
+        '<div class="field-meta"><span class="meta-label">კარიერა</span><div class="chip-row">' +
         r.field.careers.map(c => '<span class="mini-chip">' + esc(c) + "</span>").join("") +
         "</div></div>" +
         (nextCourses.length
-          ? '<div class="field-meta"><span class="meta-label">Take next</span><ul class="next-courses"><li>' +
+          ? '<div class="field-meta"><span class="meta-label">აიღე შემდეგ</span><ul class="next-courses"><li>' +
             nextCourses.join("</li><li>") + "</li></ul></div>"
           : "") +
         "</div>";
@@ -125,7 +125,7 @@ const Analyzer = (() => {
 
     html +=
       '<div class="analyzer-actions">' +
-      '<button class="btn secondary" type="button" id="askAdvisorExplain">💬 Ask the advisor to explain</button>' +
+      '<button class="btn secondary" type="button" id="askAdvisorExplain">💬 სთხოვე მრჩეველს ახსნა</button>' +
       "</div>";
 
     mount.innerHTML = html;
@@ -146,9 +146,9 @@ const Analyzer = (() => {
         .join(", ");
       App.showTab("advisor");
       Chat.send(
-        "My strength analyzer results: top matches are " + summary +
-        ". My category averages are: " + catText +
-        ". Can you explain why these fields fit me and what I should focus on next semester?"
+        "ჩემი ძლიერი მხარეების ანალიზის შედეგი: ტოპ მიმართულებებია " + summary +
+        ". კატეგორიების საშუალო ქულებია: " + catText +
+        ". ამიხსენი, რატომ მერგება ეს მიმართულებები და რას მირჩევ შემდეგი სემესტრისთვის?"
       );
     });
   }

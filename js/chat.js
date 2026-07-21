@@ -126,7 +126,7 @@ const Chat = (() => {
   function showTyping() {
     const el = document.createElement("div");
     el.className = "msg assistant typing-msg";
-    el.innerHTML = '<div class="bubble typing" aria-label="Advisor is typing">' +
+    el.innerHTML = '<div class="bubble typing" aria-label="მრჩეველი წერს">' +
       "<span></span><span></span><span></span></div>";
     els.messages.appendChild(el);
     scrollDown();
@@ -180,11 +180,11 @@ const Chat = (() => {
     const container = document.createElement("div");
     container.innerHTML =
       "<p><strong>" + escapeHtml(message) + "</strong></p>" +
-      "<p>Meanwhile, the <em>Planner</em> and <em>Analyzer</em> tabs work fully offline.</p>";
+      "<p>ამასობაში <em>დამგეგმავი</em> და <em>ანალიზატორი</em> ინტერნეტის გარეშეც მუშაობს.</p>";
     const retry = document.createElement("button");
     retry.type = "button";
     retry.className = "btn secondary";
-    retry.textContent = "Try again";
+    retry.textContent = "სცადე თავიდან";
     retry.addEventListener("click", () => {
       retry.disabled = true;
       resend();
@@ -227,8 +227,8 @@ const Chat = (() => {
     } catch (err) {
       typing.remove();
       showError(err.name === "AbortError"
-        ? "The advisor took too long to respond (60s timeout)."
-        : "I can't reach the advisor right now.");
+        ? "მრჩეველმა პასუხს ძალიან დიდი დრო მოანდომა (60 წმ)."
+        : "მრჩეველთან დაკავშირება ვერ ხერხდება.");
     } finally {
       busy = false;
       els.sendBtn.disabled = false;
@@ -247,7 +247,7 @@ const Chat = (() => {
     if (busy || !message || !message.trim()) return;
     const text = message.trim();
     const mode = (opts && opts.mode) ||
-      (/\bquiz\b|test me/i.test(text) ? "quiz" : "chat");
+      (/\bquiz\b|test me|ქვიზ|გამომეცად|გამომცად/i.test(text) ? "quiz" : "chat");
 
     addBubble("user", escapeHtml(text));
     hideChips();
@@ -265,10 +265,10 @@ const Chat = (() => {
   // ── chips & form ──────────────────────────────────────────────────
 
   const CHIPS = [
-    { icon: "📚", label: "Quiz me on this week's lecture", message: "Give me a quiz on this week's lecture material", mode: "quiz" },
-    { icon: "📉", label: "I'm struggling in a course", message: "I'm struggling in one of my courses" },
-    { icon: "🌍", label: "Foreign admissions info", message: "I'd like info about foreign university admissions and exchange programs" },
-    { icon: "🗓", label: "Plan my semester", message: "Help me plan my next semester" }
+    { icon: "📚", label: "გამომეცადე ამ კვირის ლექციაზე", message: "მომეცი ქვიზი ამ კვირის სალექციო მასალაზე", mode: "quiz" },
+    { icon: "📉", label: "კურსში მიჭირს", message: "ერთ-ერთ კურსში მიჭირს" },
+    { icon: "🌍", label: "სწავლა საზღვარგარეთ", message: "მინდა ინფორმაცია საზღვარგარეთ სწავლასა და გაცვლით პროგრამებზე" },
+    { icon: "🗓", label: "დამიგეგმე სემესტრი", message: "დამეხმარე შემდეგი სემესტრის დაგეგმვაში" }
   ];
 
   function buildChips() {
@@ -309,9 +309,9 @@ const Chat = (() => {
   function welcome() {
     const name = (Profile.get() || {}).name;
     const md =
-      "Hi" + (name ? " **" + name.split(/\s+/)[0] + "**" : "") + "! 👋 I'm your **CU ECE advisor**. " +
-      "Ask me about courses, prerequisites, professors, study resources or foreign admissions — " +
-      "in English or Georgian — or pick a quick action below.";
+      "გამარჯობა" + (name ? ", **" + name.split(/\s+/)[0] + "**" : "") + "! 👋 მე ვარ შენი **CU ECE მრჩეველი**. " +
+      "მკითხე კურსებზე, წინაპირობებზე, პროფესორებზე, სასწავლო რესურსებსა თუ საზღვარგარეთ სწავლაზე — " +
+      "ან აირჩიე სწრაფი მოქმედება ქვემოთ.";
     addAssistantMarkdown(md);
   }
 

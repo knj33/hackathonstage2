@@ -92,7 +92,7 @@ const Quiz = (() => {
     const submit = document.createElement("button");
     submit.type = "submit";
     submit.className = "btn primary";
-    submit.textContent = "Submit answers";
+    submit.textContent = "პასუხების გაგზავნა";
     actions.appendChild(submit);
     actions.appendChild(note);
     form.appendChild(actions);
@@ -114,7 +114,7 @@ const Quiz = (() => {
     });
     const firstUnanswered = answers.indexOf(null);
     if (firstUnanswered !== -1) {
-      note.textContent = "Answer question " + (firstUnanswered + 1) + " first — all questions need an answer.";
+      note.textContent = "ჯერ კითხვა " + (firstUnanswered + 1) + "-ს უპასუხე — ყველა კითხვას სჭირდება პასუხი.";
       form.querySelectorAll(".quiz-question")[firstUnanswered]
         .scrollIntoView({ behavior: "smooth", block: "center" });
       return;
@@ -140,13 +140,13 @@ const Quiz = (() => {
         const help = document.createElement("button");
         help.type = "button";
         help.className = "btn secondary quiz-help";
-        help.textContent = "Help me understand this";
+        help.textContent = "ამიხსენი ეს კითხვა";
         help.addEventListener("click", () => {
           // Explicit chat mode: the word "quiz" in this message must not
           // trigger quiz-mode detection and spawn another quiz.
           Chat.send(
-            "I got this quiz question wrong: " + q.question +
-            " I answered '" + q.options[chosen] + "'. Explain it to me.",
+            "ეს კითხვა შემეშალა ქვიზში: " + q.question +
+            " მე ვუპასუხე: „" + q.options[chosen] + "“. ამიხსენი, რატომ.",
             { mode: "chat" }
           );
         });
@@ -160,8 +160,8 @@ const Quiz = (() => {
     scoreEl.classList.add(score >= quiz.questions.length * 0.6 ? "pass" : "fail");
 
     note.textContent = score === quiz.questions.length
-      ? "Perfect score — nice work! 🎉"
-      : "Review the explanations below, or tap “Help me understand this” on any missed question.";
+      ? "იდეალური შედეგი — ყოჩაღ! 🎉"
+      : "გადახედე ახსნებს ქვემოთ, ან დააჭირე „ამიხსენი ეს კითხვა“-ს გამოტოვებულზე.";
 
     form.querySelector('button[type="submit"]').hidden = true;
     saveResult(quiz.topic || "Quiz", score, quiz.questions.length);

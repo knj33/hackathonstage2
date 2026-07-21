@@ -43,7 +43,7 @@ const Planner = (() => {
       const group = document.createElement("fieldset");
       group.className = "planner-group";
       const legend = document.createElement("legend");
-      legend.textContent = "Semester " + sem;
+      legend.textContent = "სემესტრი " + sem;
       group.appendChild(legend);
 
       // Per-semester materials tools: upload syllabi/slides through the
@@ -56,19 +56,19 @@ const Planner = (() => {
       upload.href = STAFF_UPLOAD_URL;
       upload.target = "_blank";
       upload.rel = "noopener";
-      upload.textContent = "📄 Upload syllabi";
-      upload.title = "Opens the staff upload portal — the advisor parses the file and can quiz you on the real material";
+      upload.textContent = "📄 ატვირთე სილაბუსები";
+      upload.title = "იხსნება პერსონალის ატვირთვის პორტალი — მრჩეველი ფაილს გაარჩევს და რეალურ მასალაზე გამოგცდის";
       const quizBtn = document.createElement("button");
       quizBtn.type = "button";
       quizBtn.className = "sem-tool";
-      quizBtn.textContent = "🎯 Quiz from uploads";
-      quizBtn.title = "Ask the advisor for a quiz grounded in the uploaded materials for these courses";
-      const semCourses = bySem[sem].map(c => c.name + " (" + c.code + ")").join(", ");
+      quizBtn.textContent = "🎯 ქვიზი ატვირთულიდან";
+      quizBtn.title = "სთხოვე მრჩეველს ქვიზი ამ კურსების ატვირთულ მასალებზე დაყრდნობით";
+      const semCourses = bySem[sem].map(c => CU.displayName(c) + " (" + c.code + ")").join(", ");
       quizBtn.addEventListener("click", () => {
         App.showTab("advisor");
         Chat.send(
-          "Give me a quiz based on the uploaded lecture materials for my semester " + sem +
-          " courses: " + semCourses + ".",
+          "მომეცი ქვიზი ატვირთული სალექციო მასალის მიხედვით სემესტრ " + sem +
+          "-ის კურსებზე: " + semCourses + ".",
           { mode: "quiz" }
         );
       });
@@ -82,7 +82,7 @@ const Planner = (() => {
         row.className = "check-row";
         row.innerHTML =
           '<input type="checkbox" id="' + id + '" value="' + course.code + '">' +
-          '<label for="' + id + '"><span class="grade-course">' + esc(course.name) +
+          '<label for="' + id + '"><span class="grade-course">' + esc(CU.displayName(course)) +
           '</span><span class="grade-code">' + course.code + "</span></label>";
         group.appendChild(row);
       });
@@ -140,7 +140,7 @@ const Planner = (() => {
     const prof = CU.professorById(course.professorId);
     return (
       '<li class="course-line">' +
-      '<div class="cl-main"><strong>' + esc(course.name) + "</strong>" +
+      '<div class="cl-main"><strong>' + esc(CU.displayName(course)) + "</strong>" +
       '<span class="grade-code">' + course.code + " · " + course.credits + " ECTS</span></div>" +
       '<div class="cl-sub">' + esc(prof ? prof.name : "") + (extraHtml || "") + "</div>" +
       "</li>"
@@ -155,39 +155,39 @@ const Planner = (() => {
 
     if (!completed.length) {
       html +=
-        '<div class="card empty-card"><h3>Check what you can take next</h3>' +
-        "<p>Tick the courses you've already passed — eligibility updates instantly. " +
-        "Starting fresh? Every course with no prerequisites is already open to you below.</p></div>";
+        '<div class="card empty-card"><h3>მონიშნე ჩაბარებული კურსები</h3>' +
+        "<p>მონიშნე მარცხნივ ის კურსები, რაც უკვე ჩააბარე — შედეგები მყისიერად განახლდება. " +
+        "ახლა იწყებ? ყველა უწინაპირობო კურსი უკვე ღიაა ქვემოთ.</p></div>";
     }
 
-    html += '<div class="card planner-card"><h3>✅ Eligible next semester <span class="count-badge">' +
+    html += '<div class="card planner-card"><h3>✅ ხელმისაწვდომი შემდეგ სემესტრში <span class="count-badge">' +
       eligible.length + "</span></h3>";
     html += eligible.length
       ? '<ul class="course-list">' + eligible.map(c => {
           const n = unlockCount(c.code);
-          return courseLine(c, n ? '<span class="unlock-note">unlocks ' + n + " course" + (n > 1 ? "s" : "") + "</span>" : "");
+          return courseLine(c, n ? '<span class="unlock-note">ხსნის ' + n + ' კურსს</span>' : "");
         }).join("") + "</ul>"
-      : '<p class="empty">Nothing left — you\'ve completed the whole catalog. 🎓</p>';
+      : '<p class="empty">აღარაფერი დარჩა — მთელი კატალოგი ჩაბარებული გაქვს. 🎓</p>';
     html += "</div>";
 
-    html += '<div class="card planner-card"><h3>🔒 Still blocked <span class="count-badge">' +
+    html += '<div class="card planner-card"><h3>🔒 ჯერ დაბლოკილია <span class="count-badge">' +
       blocked.length + "</span></h3>";
     html += blocked.length
       ? '<ul class="course-list">' + blocked.map(b =>
           courseLine(b.course,
-            '<span class="blocked-note">needs ' +
+            '<span class="blocked-note">სჭირდება: ' +
             b.missing.map(m => esc(CU.courseLabel(m))).join(", ") + "</span>")
         ).join("") + "</ul>"
-      : '<p class="empty">Nothing is blocked — every remaining course is open to you.</p>';
+      : '<p class="empty">დაბლოკილი აღარაფერია — ყველა დარჩენილი კურსი ღიაა.</p>';
     html += "</div>";
 
     if (picked.length) {
-      html += '<div class="card planner-card suggested"><h3>🗓 Suggested schedule <span class="count-badge">' +
+      html += '<div class="card planner-card suggested"><h3>🗓 შემოთავაზებული განრიგი <span class="count-badge">' +
         credits + " ECTS</span></h3>" +
-        '<p class="hint">Foundational courses and prerequisite-unlockers first, aiming for a ~30-credit load:</p>' +
+        '<p class="hint">ჯერ ფუნდამენტური და წინაპირობების გამხსნელი კურსები — სამიზნე დატვირთვა ~30 კრედიტი:</p>' +
         '<ul class="course-list">' + picked.map(c => {
           const n = unlockCount(c.code);
-          return courseLine(c, n ? '<span class="unlock-note">unlocks ' + n + " course" + (n > 1 ? "s" : "") + "</span>" : "");
+          return courseLine(c, n ? '<span class="unlock-note">ხსნის ' + n + ' კურსს</span>' : "");
         }).join("") + "</ul></div>";
     }
 
@@ -200,11 +200,11 @@ const Planner = (() => {
     const grades = (profile && profile.grades) || {};
     const passed = Object.keys(grades).filter(code => grades[code] !== "F");
     if (!passed.length) {
-      els.importStatus.textContent = "No passed courses in your profile yet.";
+      els.importStatus.textContent = "პროფილში ჩაბარებული კურსები ჯერ არ არის.";
     } else {
       setChecked(passed);
       saveCompleted(passed);
-      els.importStatus.textContent = "Imported " + passed.length + " passed course" + (passed.length > 1 ? "s" : "") + ".";
+      els.importStatus.textContent = "ჩაიტვირთა " + passed.length + " ჩაბარებული კურსი.";
       render();
     }
     els.importStatus.classList.add("visible");

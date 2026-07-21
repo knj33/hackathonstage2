@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CU Academic Advisor — ECE</title>
-  <meta name="description" content="AI academic advisor for Caucasus University ECE students: chat advising, strength analysis, semester planning and quizzes.">
+  <title>CU აკადემიური მრჩეველი — ECE</title>
+  <meta name="description" content="AI აკადემიური მრჩეველი კავკასიის უნივერსიტეტის ECE სტუდენტებისთვის: ჩატი, ძლიერი მხარეების ანალიზი, სემესტრის დაგეგმვა და ქვიზები.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+Georgian:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="wordmark" href="#"><span class="wm-badge">CU</span>Academic Advisor</a>
-      <nav class="tabs" role="tablist" aria-label="Sections">
-        <button class="tab" id="tab-advisor" role="tab" aria-selected="true" aria-controls="panel-advisor">Advisor</button>
-        <button class="tab" id="tab-profile" role="tab" aria-selected="false" aria-controls="panel-profile">Profile</button>
-        <button class="tab" id="tab-analyzer" role="tab" aria-selected="false" aria-controls="panel-analyzer">Analyzer</button>
-        <button class="tab" id="tab-planner" role="tab" aria-selected="false" aria-controls="panel-planner">Planner</button>
+      <a class="wordmark" href="#"><span class="wm-badge">CU</span>აკადემიური მრჩეველი</a>
+      <nav class="tabs" role="tablist" aria-label="სექციები">
+        <button class="tab" id="tab-advisor" role="tab" aria-selected="true" aria-controls="panel-advisor">მრჩეველი</button>
+        <button class="tab" id="tab-profile" role="tab" aria-selected="false" aria-controls="panel-profile">პროფილი</button>
+        <button class="tab" id="tab-analyzer" role="tab" aria-selected="false" aria-controls="panel-analyzer">ანალიზატორი</button>
+        <button class="tab" id="tab-planner" role="tab" aria-selected="false" aria-controls="panel-planner">დამგეგმავი</button>
       </nav>
     </div>
   </header>
@@ -32,17 +32,17 @@
         <div class="chat-card">
           <div class="chat-header">
             <span class="status-dot" aria-hidden="true"></span>
-            <span class="chat-title">CU ECE Advisor</span>
-            <span class="chat-status">Advisor online</span>
-            <span class="mode-badge" id="chatModeBadge" hidden title="Using canned replies — set WEBHOOK_URL in js/config.js to go live">demo mode</span>
-            <button type="button" class="newchat-btn" id="chatNewBtn" title="Start a fresh conversation">＋ New chat</button>
+            <span class="chat-title">CU ECE მრჩეველი</span>
+            <span class="chat-status">მრჩეველი ონლაინაა</span>
+            <span class="mode-badge" id="chatModeBadge" hidden title="პასუხები წინასწარ ჩაწერილია — ცოცხალი რეჟიმისთვის იხ. js/config.js">დემო რეჟიმი</span>
+            <button type="button" class="newchat-btn" id="chatNewBtn" title="ახალი საუბრის დაწყება">＋ ახალი საუბარი</button>
           </div>
           <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-          <div class="chat-chips" id="chatChips" aria-label="Quick actions"></div>
+          <div class="chat-chips" id="chatChips" aria-label="სწრაფი მოქმედებები"></div>
           <form class="chat-input" id="chatForm">
-            <label for="chatInput" class="visually-hidden" hidden>Message the advisor</label>
-            <input type="text" id="chatInput" name="message" placeholder="Ask me anything… / მკითხე ნებისმიერი რამ…" autocomplete="off">
-            <button type="submit" class="btn primary" id="chatSend">Send</button>
+            <label for="chatInput" class="visually-hidden" hidden>მისწერე მრჩეველს</label>
+            <input type="text" id="chatInput" name="message" placeholder="მკითხე ნებისმიერი რამ…" autocomplete="off">
+            <button type="submit" class="btn primary" id="chatSend">გაგზავნა</button>
           </form>
         </div>
       </div>
@@ -51,17 +51,17 @@
     <!-- ── Profile ────────────────────────────────────────────────── -->
     <section class="tab-panel" id="panel-profile" role="tabpanel" aria-labelledby="tab-profile" hidden>
       <div class="panel-head">
-        <h2>Your profile</h2>
-        <p class="lead">Add your grades once — the advisor personalizes every answer, and the analyzer and planner use them too. Everything stays in your browser.</p>
+        <h2>შენი პროფილი</h2>
+        <p class="lead">შეიყვანე შეფასებები ერთხელ — მრჩეველი ყველა პასუხს შენზე მოარგებს; ანალიზატორი და დამგეგმავიც ამ მონაცემებს იყენებს. ყველაფერი შენს ბრაუზერში რჩება.</p>
       </div>
       <form class="card form-card" id="profileForm">
         <div class="form-grid">
           <div class="field">
-            <label for="pfName">Name</label>
-            <input type="text" id="pfName" autocomplete="name" placeholder="e.g. Giorgi Beridze">
+            <label for="pfName">სახელი</label>
+            <input type="text" id="pfName" autocomplete="name" placeholder="მაგ. გიორგი ბერიძე">
           </div>
           <div class="field">
-            <label for="pfSemester">Current semester</label>
+            <label for="pfSemester">მიმდინარე სემესტრი</label>
             <select id="pfSemester">
               <option value="1">1</option><option value="2">2</option>
               <option value="3">3</option><option value="4">4</option>
@@ -70,32 +70,32 @@
             </select>
           </div>
           <div class="field">
-            <label for="pfGpa">GPA — calculated from your grades</label>
+            <label for="pfGpa">GPA — ითვლება შეფასებებიდან</label>
             <input type="text" id="pfGpa" readonly value="—" aria-live="polite"
-                   title="Credit-weighted average of the grades below — updates automatically">
+                   title="შენი შეფასებების კრედიტებით შეწონილი საშუალო — ავტომატურად ახლდება">
           </div>
         </div>
-        <h3>Course grades</h3>
-        <p class="hint">Set a grade for each course you've taken; leave the rest empty.</p>
+        <h3>კურსების შეფასებები</h3>
+        <p class="hint">მიუთითე შეფასება ჩაბარებულ კურსებზე; დანარჩენი ცარიელი დატოვე.</p>
         <div class="grades-grid" id="gradesGrid"></div>
         <div class="form-actions">
-          <button type="submit" class="btn primary">Save profile</button>
-          <button type="button" class="btn ghost" id="pfClear">Clear</button>
+          <button type="submit" class="btn primary">პროფილის შენახვა</button>
+          <button type="button" class="btn ghost" id="pfClear">გასუფთავება</button>
           <span class="save-status" id="pfStatus" role="status"></span>
         </div>
       </form>
       <div class="card">
-        <h3>Quiz history</h3>
+        <h3>ქვიზების ისტორია</h3>
         <ul id="quizHistoryList"></ul>
-        <p class="empty" id="quizHistoryEmpty">No quizzes yet — open the Advisor tab and say "quiz me on this week's lecture".</p>
+        <p class="empty" id="quizHistoryEmpty">ქვიზები ჯერ არ გაქვს — გახსენი „მრჩეველი“ და მისწერე „გამომეცადე ამ კვირის ლექციაზე“.</p>
       </div>
     </section>
 
     <!-- ── Analyzer ───────────────────────────────────────────────── -->
     <section class="tab-panel" id="panel-analyzer" role="tabpanel" aria-labelledby="tab-analyzer" hidden>
       <div class="panel-head">
-        <h2>Strength analyzer</h2>
-        <p class="lead">Your grades, mapped to ECE specialization fields — see where you're strongest and what to take next.</p>
+        <h2>ძლიერი მხარეების ანალიზი</h2>
+        <p class="lead">შენი შეფასებები ECE სპეციალიზაციებზეა გადათვლილი — ნახე, სად ხარ ყველაზე ძლიერი და რა აიღო შემდეგ.</p>
       </div>
       <div id="analyzerContent"></div>
     </section>
@@ -103,17 +103,17 @@
     <!-- ── Planner ────────────────────────────────────────────────── -->
     <section class="tab-panel" id="panel-planner" role="tabpanel" aria-labelledby="tab-planner" hidden>
       <div class="panel-head">
-        <h2>Semester planner</h2>
-        <p class="lead">Check what you can take next. Tick your completed courses — eligibility and a suggested schedule update instantly.</p>
+        <h2>სემესტრის დამგეგმავი</h2>
+        <p class="lead">ნახე, რისი აღება შეგიძლია. მონიშნე ჩაბარებული კურსები — შედეგები და შემოთავაზებული განრიგი მყისიერად განახლდება.</p>
       </div>
       <div class="planner-layout">
         <div class="card planner-side">
-          <h3>Completed courses</h3>
-          <p class="hint">Tick everything you've passed.</p>
+          <h3>ჩაბარებული კურსები</h3>
+          <p class="hint">მონიშნე ყველაფერი, რაც ჩაბარებული გაქვს.</p>
           <div id="plannerCourses"></div>
           <div class="planner-side-actions">
-            <button type="button" class="btn secondary" id="plannerImport">Import from profile</button>
-            <button type="button" class="btn ghost" id="plannerReset">Reset</button>
+            <button type="button" class="btn secondary" id="plannerImport">ჩატვირთე პროფილიდან</button>
+            <button type="button" class="btn ghost" id="plannerReset">გასუფთავება</button>
             <span id="plannerImportStatus" role="status"></span>
           </div>
         </div>
@@ -125,7 +125,7 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span>Caucasus University · Electrical &amp; Computer Engineering — student prototype</span>
+      <span>კავკასიის უნივერსიტეტი · ელექტრო და კომპიუტერული ინჟინერია — სტუდენტური პროტოტიპი</span>
       <a id="staffPortalLink" href="#" target="_blank" rel="noopener">Staff portal — upload materials</a>
     </div>
   </footer>

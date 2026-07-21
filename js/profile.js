@@ -67,7 +67,7 @@ const Profile = (() => {
       const group = document.createElement("div");
       group.className = "grades-group";
       const h = document.createElement("h4");
-      h.textContent = "Semester " + sem;
+      h.textContent = "სემესტრი " + sem;
       group.appendChild(h);
 
       bySem[sem].forEach(course => {
@@ -76,7 +76,7 @@ const Profile = (() => {
 
         const label = document.createElement("label");
         label.setAttribute("for", "grade-" + course.code);
-        label.innerHTML = '<span class="grade-course">' + course.name +
+        label.innerHTML = '<span class="grade-course">' + CU.displayName(course) +
           '</span><span class="grade-code">' + course.code + "</span>";
 
         const select = document.createElement("select");
@@ -139,7 +139,7 @@ const Profile = (() => {
       li.innerHTML =
         '<span class="qh-topic">' + escapeText(h.topic) + "</span>" +
         '<span class="qh-score' + (pct >= 60 ? " good" : "") + '">' + h.score + "/" + h.total + "</span>" +
-        '<span class="qh-date">' + new Date(h.date).toLocaleDateString() + "</span>";
+        '<span class="qh-date">' + new Date(h.date).toLocaleDateString('ka-GE') + "</span>";
       els.quizHistoryList.appendChild(li);
     });
   }
@@ -175,14 +175,14 @@ const Profile = (() => {
     els.form.addEventListener("submit", e => {
       e.preventDefault();
       save(readForm());
-      flashStatus("Saved ✓");
+      flashStatus("შენახულია ✓");
       Analyzer.render();
     });
 
     els.clearBtn.addEventListener("click", () => {
       localStorage.removeItem(KEY);
       fillForm(null);
-      flashStatus("Cleared");
+      flashStatus("გასუფთავდა");
       Analyzer.render();
     });
   }

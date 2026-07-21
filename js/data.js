@@ -20,92 +20,92 @@ const CU_DATA = {
   ],
 
   categoryLabels: {
-    programming: "Programming",
-    math: "Math",
-    circuits: "Circuits",
-    signals: "Signals",
-    systems: "Systems",
-    general: "General"
+    programming: "პროგრამირება",
+    math: "მათემატიკა",
+    circuits: "წრედები",
+    signals: "სიგნალები",
+    systems: "სისტემები",
+    general: "ზოგადი"
   },
 
   // ── 4.1 courses ───────────────────────────────────────────────────
   courses: [
     // Semester 1
-    { code: "MATH-1101", name: "Calculus 1", credits: 6, semester: 1,
+    { code: "MATH-1101", name: "Calculus 1", nameKa: "კალკულუსი 1", credits: 6, semester: 1,
       prerequisites: [], professorId: "prof-01", category: "math" },
-    { code: "CSCI-1101", name: "CompSci Basics 1", credits: 6, semester: 1,
+    { code: "CSCI-1101", name: "CompSci Basics 1", nameKa: "კომპიუტერული მეცნიერების საფუძვლები 1", credits: 6, semester: 1,
       prerequisites: [], professorId: "prof-03", category: "programming" },
-    { code: "PHYS-1101", name: "Physics 1: Mechanics", credits: 6, semester: 1,
+    { code: "PHYS-1101", name: "Physics 1: Mechanics", nameKa: "ფიზიკა 1: მექანიკა", credits: 6, semester: 1,
       prerequisites: [], professorId: "prof-04", category: "general" },
-    { code: "ENGL-1101", name: "Academic English 1", credits: 5, semester: 1,
+    { code: "ENGL-1101", name: "Academic English 1", nameKa: "აკადემიური ინგლისური 1", credits: 5, semester: 1,
       prerequisites: [], professorId: "prof-08", category: "general" },
 
     // Semester 2
-    { code: "MATH-1201", name: "Calculus 2", credits: 6, semester: 2,
+    { code: "MATH-1201", name: "Calculus 2", nameKa: "კალკულუსი 2", credits: 6, semester: 2,
       prerequisites: ["MATH-1101"], professorId: "prof-01", category: "math" },
-    { code: "CSCI-1201", name: "CompSci Basics 2", credits: 6, semester: 2,
+    { code: "CSCI-1201", name: "CompSci Basics 2", nameKa: "კომპიუტერული მეცნიერების საფუძვლები 2", credits: 6, semester: 2,
       prerequisites: ["CSCI-1101"], professorId: "prof-02", category: "programming" },
-    { code: "PHYS-1201", name: "Physics 2: Electricity & Magnetism", credits: 6, semester: 2,
+    { code: "PHYS-1201", name: "Physics 2: Electricity & Magnetism", nameKa: "ფიზიკა 2: ელექტრობა და მაგნეტიზმი", credits: 6, semester: 2,
       prerequisites: ["PHYS-1101", "MATH-1101"], professorId: "prof-04", category: "circuits" },
-    { code: "EENG-1201", name: "Digital Logic", credits: 5, semester: 2,
+    { code: "EENG-1201", name: "Digital Logic", nameKa: "ციფრული ლოგიკა", credits: 5, semester: 2,
       prerequisites: [], professorId: "prof-07", category: "systems" },
 
     // Semester 3
-    { code: "MATH-2101", name: "Linear Algebra", credits: 5, semester: 3,
+    { code: "MATH-2101", name: "Linear Algebra", nameKa: "წრფივი ალგებრა", credits: 5, semester: 3,
       prerequisites: ["MATH-1101"], professorId: "prof-06", category: "math" },
-    { code: "EENG-2101", name: "Circuit Analysis 1", credits: 6, semester: 3,
+    { code: "EENG-2101", name: "Circuit Analysis 1", nameKa: "წრედების ანალიზი 1", credits: 6, semester: 3,
       prerequisites: ["PHYS-1201", "MATH-1201"], professorId: "prof-05", category: "circuits" },
-    { code: "CSCI-2101", name: "Data Structures & Algorithms", credits: 6, semester: 3,
+    { code: "CSCI-2101", name: "Data Structures & Algorithms", nameKa: "მონაცემთა სტრუქტურები და ალგორითმები", credits: 6, semester: 3,
       prerequisites: ["CSCI-1201"], professorId: "prof-02", category: "programming" },
-    { code: "EENG-2102", name: "Microcontrollers", credits: 6, semester: 3,
+    { code: "EENG-2102", name: "Microcontrollers", nameKa: "მიკროკონტროლერები", credits: 6, semester: 3,
       prerequisites: ["EENG-1201", "CSCI-1101"], professorId: "prof-07", category: "systems" },
 
     // Semester 4
-    { code: "EENG-2201", name: "Circuit Analysis 2", credits: 6, semester: 4,
+    { code: "EENG-2201", name: "Circuit Analysis 2", nameKa: "წრედების ანალიზი 2", credits: 6, semester: 4,
       prerequisites: ["EENG-2101"], professorId: "prof-05", category: "circuits" },
-    { code: "EENG-2202", name: "Signals & Systems", credits: 6, semester: 4,
+    { code: "EENG-2202", name: "Signals & Systems", nameKa: "სიგნალები და სისტემები", credits: 6, semester: 4,
       prerequisites: ["MATH-1201", "MATH-2101"], professorId: "prof-06", category: "signals" },
-    { code: "EENG-2203", name: "Electronics 1", credits: 6, semester: 4,
+    { code: "EENG-2203", name: "Electronics 1", nameKa: "ელექტრონიკა 1", credits: 6, semester: 4,
       prerequisites: ["EENG-2101"], professorId: "prof-09", category: "circuits" },
-    { code: "MATH-2201", name: "Probability & Statistics", credits: 5, semester: 4,
+    { code: "MATH-2201", name: "Probability & Statistics", nameKa: "ალბათობა და სტატისტიკა", credits: 5, semester: 4,
       prerequisites: ["MATH-1201"], professorId: "prof-01", category: "math" }
   ],
 
   // ── 4.2 professors ────────────────────────────────────────────────
   professors: [
-    { id: "prof-01", name: "Giorgi Beridze", title: "Professor of Mathematics",
+    { id: "prof-01", name: "გიორგი ბერიძე", title: "Professor of Mathematics",
       courses: ["MATH-1101", "MATH-1201", "MATH-2201"],
       office: "Room B-214, Building B", consultationHours: "Mon & Wed 14:00–16:00",
       email: "g.beridze@cu.edu.ge" },
-    { id: "prof-02", name: "Nino Kapanadze", title: "Associate Professor of Computer Science",
+    { id: "prof-02", name: "ნინო კაპანაძე", title: "Associate Professor of Computer Science",
       courses: ["CSCI-1201", "CSCI-2101"],
       office: "Room C-310, Building C", consultationHours: "Tue 12:00–14:00, Thu 15:00–16:00",
       email: "n.kapanadze@cu.edu.ge" },
-    { id: "prof-03", name: "Levan Tsiklauri", title: "Assistant Professor of Computer Science",
+    { id: "prof-03", name: "ლევან წიკლაური", title: "Assistant Professor of Computer Science",
       courses: ["CSCI-1101"],
       office: "Room C-305, Building C", consultationHours: "Mon 11:00–13:00",
       email: "l.tsiklauri@cu.edu.ge" },
-    { id: "prof-04", name: "Tamar Gelashvili", title: "Professor of Physics",
+    { id: "prof-04", name: "თამარ გელაშვილი", title: "Professor of Physics",
       courses: ["PHYS-1101", "PHYS-1201"],
       office: "Room A-118, Building A", consultationHours: "Wed & Fri 13:00–15:00",
       email: "t.gelashvili@cu.edu.ge" },
-    { id: "prof-05", name: "Irakli Maisuradze", title: "Associate Professor of Electrical Engineering",
+    { id: "prof-05", name: "ირაკლი მაისურაძე", title: "Associate Professor of Electrical Engineering",
       courses: ["EENG-2101", "EENG-2201"],
       office: "Room D-402, Engineering Lab Wing", consultationHours: "Tue & Thu 10:00–12:00",
       email: "i.maisuradze@cu.edu.ge" },
-    { id: "prof-06", name: "Ana Lomidze", title: "Associate Professor of Applied Mathematics",
+    { id: "prof-06", name: "ანა ლომიძე", title: "Associate Professor of Applied Mathematics",
       courses: ["MATH-2101", "EENG-2202"],
       office: "Room B-220, Building B", consultationHours: "Mon 15:00–17:00",
       email: "a.lomidze@cu.edu.ge" },
-    { id: "prof-07", name: "Davit Janelidze", title: "Assistant Professor of Embedded Systems",
+    { id: "prof-07", name: "დავით ჯანელიძე", title: "Assistant Professor of Embedded Systems",
       courses: ["EENG-1201", "EENG-2102"],
       office: "Room D-408, Engineering Lab Wing", consultationHours: "Wed 10:00–12:00, Fri 14:00–15:00",
       email: "d.janelidze@cu.edu.ge" },
-    { id: "prof-08", name: "Ketevan Abashidze", title: "Senior Lecturer in English",
+    { id: "prof-08", name: "ქეთევან აბაშიძე", title: "Senior Lecturer in English",
       courses: ["ENGL-1101"],
       office: "Room A-205, Building A", consultationHours: "Tue 13:00–15:00",
       email: "k.abashidze@cu.edu.ge" },
-    { id: "prof-09", name: "Zurab Machavariani", title: "Professor of Electronics",
+    { id: "prof-09", name: "ზურაბ მაჭავარიანი", title: "Professor of Electronics",
       courses: ["EENG-2203"],
       office: "Room D-415, Engineering Lab Wing", consultationHours: "Thu 13:00–15:00",
       email: "z.machavariani@cu.edu.ge" }
@@ -350,52 +350,52 @@ const CU_DATA = {
   // ── 4.5 eceFields (for the strength analyzer) ─────────────────────
   eceFields: [
     {
-      id: "embedded", name: "Embedded Systems",
-      description: "Designing the small computers inside devices — firmware, microcontrollers and hardware-software integration.",
+      id: "embedded", name: "ჩაშენებული სისტემები",
+      description: "მოწყობილობებში ჩაშენებული პატარა კომპიუტერების დაპროექტება — firmware, მიკროკონტროლერები და აპარატურა-პროგრამის ინტეგრაცია.",
       weights: { programming: 0.8, math: 0.4, circuits: 0.6, signals: 0.5, systems: 1.0 },
-      careers: ["Embedded engineer", "Firmware developer", "IoT engineer"],
+      careers: ["ჩაშენებული სისტემების ინჟინერი", "Firmware დეველოპერი", "IoT ინჟინერი"],
       recommendedCourses: ["EENG-2102", "EENG-1201", "CSCI-2101"]
     },
     {
-      id: "dsp", name: "Signal Processing",
-      description: "Analyzing and transforming signals — audio, images, sensor data — with math-heavy tools like Fourier analysis and filtering.",
+      id: "dsp", name: "სიგნალების დამუშავება",
+      description: "სიგნალების ანალიზი და გარდაქმნა — აუდიო, გამოსახულება, სენსორების მონაცემები — ფურიეს ანალიზითა და ფილტრაციით.",
       weights: { programming: 0.5, math: 0.9, circuits: 0.3, signals: 1.0, systems: 0.4 },
-      careers: ["DSP engineer", "Audio/image processing engineer", "Radar systems engineer"],
+      careers: ["DSP ინჟინერი", "აუდიო/გამოსახულების ინჟინერი", "სარადარო სისტემების ინჟინერი"],
       recommendedCourses: ["EENG-2202", "MATH-2101", "MATH-2201"]
     },
     {
-      id: "software", name: "Software Engineering",
-      description: "Building larger software systems — from clean code and data structures to full applications and services.",
+      id: "software", name: "პროგრამული ინჟინერია",
+      description: "დიდი პროგრამული სისტემების აწყობა — სუფთა კოდიდან და მონაცემთა სტრუქტურებიდან სრულ აპლიკაციებამდე.",
       weights: { programming: 1.0, math: 0.6, circuits: 0.1, signals: 0.2, systems: 0.5 },
-      careers: ["Software engineer", "Backend developer", "DevOps engineer"],
+      careers: ["პროგრამული ინჟინერი", "Backend დეველოპერი", "DevOps ინჟინერი"],
       recommendedCourses: ["CSCI-2101", "CSCI-1201", "MATH-2101"]
     },
     {
-      id: "ml", name: "Machine Learning / AI",
-      description: "Teaching computers to learn from data — combining strong math (linear algebra, probability) with solid programming.",
+      id: "ml", name: "მანქანური სწავლება / AI",
+      description: "კომპიუტერების სწავლება მონაცემებიდან — ძლიერი მათემატიკა (წრფივი ალგებრა, ალბათობა) მყარ პროგრამირებასთან ერთად.",
       weights: { programming: 0.9, math: 1.0, circuits: 0.1, signals: 0.5, systems: 0.3 },
-      careers: ["ML engineer", "Data scientist", "AI researcher"],
+      careers: ["ML ინჟინერი", "მონაცემთა მეცნიერი", "AI მკვლევარი"],
       recommendedCourses: ["MATH-2101", "MATH-2201", "CSCI-2101"]
     },
     {
-      id: "power", name: "Power & Electronics",
-      description: "Analog circuits, power conversion and electronic devices — from amplifiers to power grids.",
+      id: "power", name: "ენერგეტიკა და ელექტრონიკა",
+      description: "ანალოგური წრედები, ენერგიის გარდაქმნა და ელექტრონული მოწყობილობები — გამაძლიერებლებიდან ენერგოსისტემებამდე.",
       weights: { programming: 0.2, math: 0.6, circuits: 1.0, signals: 0.4, systems: 0.4 },
-      careers: ["Electronics engineer", "Power systems engineer", "Hardware design engineer"],
+      careers: ["ელექტრონიკის ინჟინერი", "ენერგოსისტემების ინჟინერი", "აპარატურის ინჟინერი"],
       recommendedCourses: ["EENG-2203", "EENG-2201", "PHYS-1201"]
     },
     {
-      id: "telecom", name: "Telecommunications",
-      description: "Moving information across the world — wireless systems, networks, modulation and communication theory.",
+      id: "telecom", name: "ტელეკომუნიკაციები",
+      description: "ინფორმაციის გადაცემა მსოფლიოში — უსადენო სისტემები, ქსელები, მოდულაცია და კავშირგაბმულობის თეორია.",
       weights: { programming: 0.4, math: 0.8, circuits: 0.5, signals: 0.9, systems: 0.5 },
-      careers: ["Telecom engineer", "RF engineer", "Network engineer"],
+      careers: ["ტელეკომ ინჟინერი", "RF ინჟინერი", "ქსელის ინჟინერი"],
       recommendedCourses: ["EENG-2202", "MATH-2201", "EENG-2201"]
     },
     {
-      id: "robotics", name: "Robotics",
-      description: "Machines that sense, decide and act — blending control systems, embedded hardware and programming.",
+      id: "robotics", name: "რობოტიკა",
+      description: "მანქანები, რომლებიც გრძნობენ, წყვეტენ და მოქმედებენ — მართვის სისტემები, ჩაშენებული აპარატურა და პროგრამირება ერთად.",
       weights: { programming: 0.8, math: 0.7, circuits: 0.6, signals: 0.6, systems: 0.9 },
-      careers: ["Robotics engineer", "Control systems engineer", "Automation engineer"],
+      careers: ["რობოტიკის ინჟინერი", "მართვის სისტემების ინჟინერი", "ავტომატიზაციის ინჟინერი"],
       recommendedCourses: ["EENG-2102", "EENG-2202", "MATH-2101"]
     }
   ]
@@ -415,6 +415,11 @@ const CU = {
   },
   courseLabel(code) {
     const c = CU.courseByCode(code);
-    return c ? c.name + " (" + c.code + ")" : code;
+    return c ? (c.nameKa || c.name) + " (" + c.code + ")" : code;
+  },
+  // Display name for the UI (Georgian); c.name stays the canonical English
+  // key that the mock and the backend knowledge base match on.
+  displayName(c) {
+    return c.nameKa || c.name;
   }
 };

@@ -13,8 +13,8 @@
   --success:   #2E7D5B;
   --error:     #B3403A;
 
-  --font-display: "Sora", "Inter", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Sora", "Noto Sans Georgian", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", "Noto Sans Georgian", system-ui, -apple-system, "Segoe UI", sans-serif;
   --radius: 12px;
   --radius-btn: 8px;
   --shadow: 0 1px 2px rgba(11, 37, 69, 0.05), 0 4px 16px rgba(11, 37, 69, 0.06);
