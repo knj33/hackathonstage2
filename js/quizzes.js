@@ -16,24 +16,26 @@ const Quizzes = (() => {
     return d.innerHTML;
   }
 
+  // Every course that has a syllabus (quizzes are generated from it).
   function subjects() {
-    return CU_DATA.weeklyMaterials
-      .map(w => ({ week: w, course: CU.courseByCode(w.courseCode) }))
-      .filter(s => s.course);
+    return CU_DATA.courses
+      .filter(c => CU_DATA.syllabi[c.code])
+      .map(c => ({ course: c, syllabus: CU_DATA.syllabi[c.code] }));
   }
 
-  // ── subject list (uploaded-material courses only) ─────────────────
+  // ── subject list (syllabus-backed courses) ────────────────────────
 
   function buildSubjectList() {
     els.subjects.innerHTML = "";
     subjects().forEach(s => {
+      const topics = (s.syllabus.topics || []).slice(0, 3).join(" · ");
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "subject-card";
       btn.innerHTML =
         '<span class="subject-name">' + esc(CU.displayName(s.course)) + "</span>" +
         '<span class="grade-code">' + s.course.code + "</span>" +
-        '<span class="subject-topic">კვირა ' + s.week.week + " · " + esc(s.week.topic) + "</span>" +
+        '<span class="subject-topic">' + esc(topics) + "</span>" +
         '<span class="subject-cta">▶ დაიწყე ქვიზი</span>';
       btn.addEventListener("click", () => start(s, btn));
       els.subjects.appendChild(btn);
@@ -50,8 +52,8 @@ const Quizzes = (() => {
   function emptyStage() {
     els.stage.innerHTML =
       '<div class="card empty-card"><h3>აირჩიე საგანი</h3>' +
-      "<p>ქვიზები დგება მხოლოდ იმ საგნებზე, რომლებზეც ლექციის მასალა ან სილაბუსია ატვირთული. " +
-      'ვერ ხედავ შენს საგანს? მასალის ატვირთვა ხდება <a href="' + STAFF_UPLOAD_URL +
+      "<p>აირჩიე მარცხნიდან საგანი — მრჩეველი მის სილაბუსზე დაყრდნობით შეგიდგენს ქვიზს. " +
+      'დამატებითი მასალის ატვირთვა შესაძლებელია <a href="' + STAFF_UPLOAD_URL +
       '" target="_blank" rel="noopener">პერსონალის პორტალიდან</a>.</p></div>';
   }
 
@@ -80,10 +82,11 @@ const Quizzes = (() => {
     busy = true;
     setActive(btn);
     showLoading(entry.course);
+    const topics = (entry.syllabus.topics || []).join(", ");
     const msg =
       "მომეცი ქვიზი კურსზე " + CU.displayName(entry.course) + " (" + entry.course.code +
-      ") ატვირთული სალექციო მასალის მიხედვით. თემა: " + entry.week.topic +
-      " (კვირა " + entry.week.week + ").";
+      ") ამ კურსის სილაბუსის მიხედვით. სილაბუსის თემები: " + topics +
+      ". დააგენერირე 5 კითხვა, თითო 4 ვარიანტით.";
     try {
       const data = await Chat.request(msg, { mode: "quiz" });
       busy = false;

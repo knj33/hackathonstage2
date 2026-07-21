@@ -196,11 +196,9 @@ const Chat = (() => {
 
   // ── network ───────────────────────────────────────────────────────
 
-  // Return the first balanced { … } object in the text, respecting string
+  // Scan a balanced { … } object starting at `start`, respecting string
   // literals and escapes so braces inside values don't fool the scan.
-  function extractBalanced(text) {
-    const start = text.indexOf("{");
-    if (start === -1) return null;
+  function balancedFrom(text, start) {
     let depth = 0, inStr = false, esc = false;
     for (let i = start; i < text.length; i++) {
       const ch = text[i];
@@ -214,19 +212,55 @@ const Chat = (() => {
     return null;
   }
 
+  // Try every "{" position (preferring one that opens a typed envelope) and
+  // return the first that parses to a JSON object.
+  function embeddedJson(text) {
+    let idx = text.search(/\{\s*"type"/);
+    if (idx === -1) idx = text.indexOf("{");
+    while (idx !== -1) {
+      const cand = balancedFrom(text, idx);
+      if (cand) { try { return JSON.parse(cand); } catch (e) { /* keep scanning */ } }
+      idx = text.indexOf("{", idx + 1);
+    }
+    return null;
+  }
+
+  // Peel common n8n wrappers ([{…}], {output:"…"}, {json:{…}}, {data:{…}})
+  // down to the actual { type, … } envelope.
+  function unwrap(obj, depth) {
+    if (depth > 6 || obj == null) return obj;
+    if (Array.isArray(obj)) return obj.length ? unwrap(obj[0], depth + 1) : obj;
+    if (typeof obj === "object" && !obj.type) {
+      const keys = ["output", "text", "message", "data", "json", "response", "result", "content"];
+      for (let k = 0; k < keys.length; k++) {
+        const v = obj[keys[k]];
+        if (v == null) continue;
+        if (typeof v === "string") {
+          const p = parseEnvelope(v);
+          if (p && typeof p === "object" && p.type) return p;
+        } else if (typeof v === "object") {
+          const u = unwrap(v, depth + 1);
+          if (u && typeof u === "object" && u.type) return u;
+        }
+      }
+    }
+    return obj;
+  }
+
   // The agent doesn't always return a clean JSON body: it may prepend a
-  // sentence of reasoning ("the material isn't uploaded, generating from
-  // general knowledge…") or wrap the envelope in a ```json fence. Parse
-  // clean JSON first, then recover the embedded envelope; fall back to the
-  // raw string (rendered as text) only if there's no JSON at all.
+  // sentence of reasoning, wrap the envelope in a ```json fence, wrap it in
+  // an n8n {output:…}/array container, or several at once. Recover the
+  // { type, … } envelope from any of these; fall back to raw text only when
+  // there's no JSON at all.
   function parseEnvelope(raw) {
+    if (raw && typeof raw === "object") return unwrap(raw, 0);
     if (typeof raw !== "string") return raw;
     const t = raw.trim();
-    try { return JSON.parse(t); } catch (e) { /* not clean JSON */ }
+    try { return unwrap(JSON.parse(t), 0); } catch (e) { /* not clean JSON */ }
     const fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
-    if (fence) { try { return JSON.parse(fence[1].trim()); } catch (e) { /* fenced but invalid */ } }
-    const obj = extractBalanced(t);
-    if (obj) { try { return JSON.parse(obj); } catch (e) { /* looked like JSON but wasn't */ } }
+    if (fence) { try { return unwrap(JSON.parse(fence[1].trim()), 0); } catch (e) { /* fenced but invalid */ } }
+    const obj = embeddedJson(t);
+    if (obj) return unwrap(obj, 0);
     return raw;
   }
 
